@@ -193,16 +193,7 @@
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 
-<!-- API Key Modal -->
-<div id="apiModal" class="modal-overlay">
-  <div class="modal">
-    <h2>Welcome to the WA Holiday Finder</h2>
-    <p>This app uses Claude AI with web search to find real-time holiday deals. To get started, you'll need an Anthropic API key.</p>
-    <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." />
-    <div class="note">Your key is stored only in this browser session and never sent anywhere except the Anthropic API. You can get a key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--gold)">console.anthropic.com</a></div>
-    <button class="btn btn-primary" onclick="saveApiKey()" style="width:100%">Get Started</button>
-  </div>
-</div>
+<!-- API key is hardcoded below in the JavaScript -->
 
 <header>
   <div class="tag-line">AI-Powered Travel Agent</div>
@@ -317,16 +308,10 @@ const INTERESTS = ["Beach & Snorkelling","Wine & Food","Wildlife","Adventure & H
 const DURATIONS = ["Weekend (2-3 nights)","Short break (4-5 nights)","Week (6-7 nights)","Extended (8+ nights)"];
 const BUDGETS = ["Budget (<$150/night)","Mid-range ($150-$300/night)","Premium ($300-$500/night)","Luxury ($500+/night)"];
 
-let state = { region: null, interests: [], duration: null, budget: null, extra: "", results: "", apiKey: "" };
+let state = { region: null, interests: [], duration: null, budget: null, extra: "", results: "", apiKey: "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" };
 let currentStep = 0;
 
-// --- API Key ---
-function saveApiKey() {
-  const key = document.getElementById('apiKeyInput').value.trim();
-  if (!key) return;
-  state.apiKey = key;
-  document.getElementById('apiModal').classList.add('hidden');
-}
+// --- API Key is hardcoded in state above ---
 
 // --- Build UI ---
 function buildRegions() {
