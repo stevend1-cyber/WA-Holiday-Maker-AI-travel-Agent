@@ -2,7 +2,7 @@
 
 **An AI-powered travel agent that searches the web in real time for the best holiday deals across Western Australia.**
 
-Built by [ECU School of Business & Law](https://www.ecu.edu.au) · Powered by [Claude AI](https://www.anthropic.com)
+Built by Steven D'Alessadnro [ECU School of Business & Law](https://www.ecu.edu.au) · Powered by [Claude AI](https://www.anthropic.com)
 
 🔗 **Live App:** [stevend1-cyber.github.io/WA-Holiday-Maker-AI-travel-Agent](https://stevend1-cyber.github.io/WA-Holiday-Maker-AI-travel-Agent/)
 
