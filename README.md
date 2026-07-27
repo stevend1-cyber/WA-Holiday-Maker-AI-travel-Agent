@@ -153,11 +153,11 @@ Since it's a single HTML file, you can easily adapt it:
 ## Acknowledgements
 
 - Built as a demonstration of AI-powered consumer decision tools for the hospitality and tourism industry
-- Developed at [Edith Cowan University](https://www.ecu.edu.au), School of Business & Law
+- Developed by Steven D'Alessandro [Edith Cowan University](https://www.ecu.edu.au), School of Business & Law
 - Powered by [Anthropic Claude](https://www.anthropic.com) with web search
 
 ---
 
 ## Licence
 
-This project is provided for educational and demonstration purposes. Feel free to adapt it for your own use.
+This project is provided for educational and demonstration purposes. All rights are copyrighted by the owner
