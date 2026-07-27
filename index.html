@@ -295,6 +295,7 @@
     </div>
 
     <button class="btn btn-ghost" style="width:100%;margin-top:1rem" onclick="startOver()">Start a New Search</button>
+    <p style="text-align:center;margin-top:0.8rem;"><a href="#" onclick="forgetKey();return false;" style="color:var(--text-dim);font-size:0.75rem;text-decoration:underline;">Change API key</a></p>
   </div>
 
   <!-- Error -->
@@ -341,14 +342,36 @@ async function validateAndSaveKey() {
       return;
     }
     state.apiKey = key;
-    document.getElementById('apiEntry').classList.add('hidden');
-    document.getElementById('mainHeader').classList.remove('hidden');
-    document.getElementById('progressBar').classList.remove('hidden');
-    document.getElementById('step0').classList.remove('hidden');
+    try { localStorage.setItem('wa_holiday_finder_key', key); } catch(e) {}
+    showMainApp();
   } catch (e) {
     errEl.style.color = '#E88A8A';
     errEl.textContent = 'Connection failed: ' + e.message;
   }
+}
+
+function showMainApp() {
+  document.getElementById('apiEntry').classList.add('hidden');
+  document.getElementById('mainHeader').classList.remove('hidden');
+  document.getElementById('progressBar').classList.remove('hidden');
+  document.getElementById('step0').classList.remove('hidden');
+}
+
+function forgetKey() {
+  try { localStorage.removeItem('wa_holiday_finder_key'); } catch(e) {}
+  state.apiKey = '';
+  location.reload();
+}
+
+// --- Check for saved key on page load ---
+function checkSavedKey() {
+  try {
+    const saved = localStorage.getItem('wa_holiday_finder_key');
+    if (saved && saved.startsWith('sk-ant-')) {
+      state.apiKey = saved;
+      showMainApp();
+    }
+  } catch(e) {}
 }
 
 // --- Build UI ---
@@ -552,6 +575,7 @@ buildRegions();
 buildInterests();
 buildOptions('durationList', DURATIONS, 'duration', 3);
 buildOptions('budgetList', BUDGETS, 'budget', 4);
+checkSavedKey();
 </script>
 </body>
 </html>
