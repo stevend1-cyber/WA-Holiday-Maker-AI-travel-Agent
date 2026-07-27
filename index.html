@@ -3,190 +3,132 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WA Holiday Deal Finder</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>WA Holiday Deal Finder — ECU</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   :root {
-    --bg-deep: #0B1A2E;
-    --bg-mid: #12263A;
-    --bg-light: #1A3248;
-    --gold: #E8A838;
-    --gold-dark: #D4872E;
-    --gold-pale: #F5DEB3;
-    --text: #E8E0D4;
-    --text-muted: #8A9BAD;
+    --ecu-teal: #26B298;
+    --ecu-navy: #0E2841;
+    --ecu-magenta: #B11D75;
+    --ecu-gray: #EFF3F2;
+    --ecu-teal-light: #2CC9AC;
+    --ecu-teal-dark: #1E9A82;
+    --text: #E8E8E8;
+    --text-muted: #9BADB8;
     --text-dim: #6A7B8D;
-    --card-bg: rgba(255,255,255,0.04);
-    --card-border: rgba(232,168,56,0.15);
+    --card-bg: rgba(255,255,255,0.05);
+    --card-border: rgba(38,178,152,0.2);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
     min-height: 100vh;
-    background: linear-gradient(165deg, var(--bg-deep) 0%, var(--bg-mid) 35%, var(--bg-light) 65%, #0E2233 100%);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    overflow-x: hidden;
+    background: linear-gradient(165deg, var(--ecu-navy) 0%, #112E4D 40%, #153550 70%, var(--ecu-navy) 100%);
+    color: var(--text); font-family: Arial, Helvetica, sans-serif; overflow-x: hidden;
   }
-
   .orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; }
-  .orb-1 { top: -20%; right: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(232,168,56,0.06) 0%, transparent 70%); }
-  .orb-2 { bottom: -15%; left: -8%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(56,168,232,0.04) 0%, transparent 70%); }
+  .orb-1 { top: -18%; right: -8%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(38,178,152,0.08) 0%, transparent 70%); }
+  .orb-2 { bottom: -12%; left: -6%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(177,29,117,0.05) 0%, transparent 70%); }
+  .container { max-width: 680px; margin: 0 auto; padding: 0 1.5rem 3rem; position: relative; z-index: 1; }
 
-  .container { max-width: 660px; margin: 0 auto; padding: 0 1.5rem 3rem; position: relative; z-index: 1; }
+  /* ECU Header */
+  .ecu-bar { background: var(--ecu-navy); border-bottom: 3px solid var(--ecu-teal); padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 0.8rem; position: relative; z-index: 2; }
+  .ecu-logo { font-weight: 700; font-size: 1.1rem; color: #fff; letter-spacing: 0.05em; }
+  .ecu-logo span { color: var(--ecu-teal); }
+  .ecu-sub { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; }
 
-  header { text-align: center; padding: 2.5rem 1.5rem 1rem; position: relative; z-index: 1; }
-  .tag-line { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; font-weight: 600; }
-  h1 {
-    font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 2.8rem);
-    font-weight: 800; line-height: 1.15;
-    background: linear-gradient(135deg, var(--gold-pale) 0%, var(--gold) 50%, var(--gold-dark) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .subtitle { color: var(--text-muted); margin-top: 0.6rem; font-size: 0.9rem; max-width: 420px; margin-left: auto; margin-right: auto; }
+  header { text-align: center; padding: 2rem 1.5rem 1rem; position: relative; z-index: 1; }
+  .tag-line { font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ecu-teal); margin-bottom: 0.5rem; font-weight: 600; }
+  h1 { font-size: clamp(1.7rem, 5vw, 2.6rem); font-weight: 800; line-height: 1.15;
+    background: linear-gradient(135deg, #fff 0%, var(--ecu-teal) 60%, var(--ecu-teal-dark) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .subtitle { color: var(--text-muted); margin-top: 0.5rem; font-size: 0.88rem; max-width: 440px; margin-left: auto; margin-right: auto; }
 
-  /* Progress */
   .progress { display: flex; gap: 6px; justify-content: center; padding: 0 2rem; margin-bottom: 1.5rem; }
   .progress-dot { height: 3px; flex: 1; max-width: 60px; border-radius: 2px; background: rgba(255,255,255,0.08); transition: background 0.4s; }
-  .progress-dot.active { background: linear-gradient(90deg, var(--gold), var(--gold-dark)); }
+  .progress-dot.active { background: linear-gradient(90deg, var(--ecu-teal), var(--ecu-teal-dark)); }
 
-  /* Cards */
-  .card {
-    background: var(--card-bg); border: 1px solid var(--card-border);
-    border-radius: 12px; padding: 1.5rem; backdrop-filter: blur(10px);
-    animation: fadeUp 0.35s ease-out;
-  }
+  .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 1.5rem; backdrop-filter: blur(10px); animation: fadeUp 0.35s ease-out; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-
-  .card h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 0.3rem; color: var(--gold-pale); }
+  .card h2 { font-size: 1.15rem; margin-bottom: 0.3rem; color: #fff; }
   .card .hint { color: var(--text-muted); font-size: 0.82rem; margin-bottom: 1rem; }
 
-  /* Buttons */
-  .btn {
-    border: none; border-radius: 8px; padding: 0.75rem 2rem; font-weight: 700; font-size: 0.95rem;
-    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; letter-spacing: 0.02em;
-  }
-  .btn-primary { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: var(--bg-deep); }
+  .btn { border: none; border-radius: 8px; padding: 0.7rem 1.8rem; font-weight: 700; font-size: 0.9rem; cursor: pointer; font-family: Arial, sans-serif; transition: all 0.2s; letter-spacing: 0.02em; }
+  .btn-primary { background: linear-gradient(135deg, var(--ecu-teal), var(--ecu-teal-dark)); color: #fff; }
   .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
   .btn-primary:disabled { opacity: 0.4; cursor: default; transform: none; filter: none; }
-  .btn-ghost { background: transparent; border: 1px solid rgba(232,168,56,0.3); color: var(--gold); }
-  .btn-ghost:hover { border-color: var(--gold); background: rgba(232,168,56,0.06); }
-  .btn-row { display: flex; gap: 0.8rem; margin-top: 1rem; }
+  .btn-ghost { background: transparent; border: 1px solid rgba(38,178,152,0.35); color: var(--ecu-teal); }
+  .btn-ghost:hover { border-color: var(--ecu-teal); background: rgba(38,178,152,0.06); }
+  .btn-magenta { background: linear-gradient(135deg, var(--ecu-magenta), #8A1660); color: #fff; }
+  .btn-magenta:hover { filter: brightness(1.1); }
+  .btn-row { display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap; }
 
-  /* Tags / option buttons */
   .tag-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.2rem; }
-  .tag {
-    border: 1px solid rgba(232,168,56,0.3); border-radius: 20px; padding: 0.5rem 1rem;
-    cursor: pointer; transition: all 0.2s; font-size: 0.85rem; font-family: 'DM Sans', sans-serif;
-    background: rgba(255,255,255,0.03); color: #C8BFB0;
-  }
-  .tag:hover { border-color: rgba(232,168,56,0.5); background: rgba(232,168,56,0.06); }
-  .tag.active { background: rgba(232,168,56,0.15); border-color: var(--gold); color: var(--gold); font-weight: 600; }
+  .tag { border: 1px solid rgba(38,178,152,0.3); border-radius: 20px; padding: 0.5rem 1rem; cursor: pointer; transition: all 0.2s; font-size: 0.83rem; font-family: Arial, sans-serif; background: rgba(255,255,255,0.03); color: #B8C8D0; }
+  .tag:hover { border-color: rgba(38,178,152,0.5); background: rgba(38,178,152,0.06); }
+  .tag.active { background: rgba(38,178,152,0.15); border-color: var(--ecu-teal); color: var(--ecu-teal); font-weight: 600; }
 
-  /* Region grid */
   .region-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
-  .region-btn {
-    border: 1px solid rgba(232,168,56,0.3); border-radius: 12px; padding: 0.9rem;
-    text-align: left; display: flex; align-items: center; gap: 0.6rem;
-    cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
-    background: rgba(255,255,255,0.03); color: #C8BFB0; font-size: 0.85rem; line-height: 1.3;
-  }
-  .region-btn:hover { border-color: rgba(232,168,56,0.5); background: rgba(232,168,56,0.06); }
+  .region-btn { border: 1px solid rgba(38,178,152,0.3); border-radius: 12px; padding: 0.85rem; text-align: left; display: flex; align-items: center; gap: 0.6rem; cursor: pointer; transition: all 0.2s; font-family: Arial, sans-serif; background: rgba(255,255,255,0.03); color: #B8C8D0; font-size: 0.83rem; line-height: 1.3; }
+  .region-btn:hover { border-color: rgba(38,178,152,0.5); background: rgba(38,178,152,0.06); }
   .region-btn .emoji { font-size: 1.3rem; flex-shrink: 0; }
 
-  /* List options */
   .option-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.2rem; }
-  .option-btn {
-    border: 1px solid rgba(232,168,56,0.3); border-radius: 10px; padding: 0.8rem 1rem;
-    text-align: left; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
-    background: rgba(255,255,255,0.03); color: #C8BFB0; font-size: 0.88rem;
-  }
-  .option-btn:hover { border-color: rgba(232,168,56,0.5); background: rgba(232,168,56,0.06); }
+  .option-btn { border: 1px solid rgba(38,178,152,0.3); border-radius: 10px; padding: 0.8rem 1rem; text-align: left; cursor: pointer; transition: all 0.2s; font-family: Arial, sans-serif; background: rgba(255,255,255,0.03); color: #B8C8D0; font-size: 0.86rem; }
+  .option-btn:hover { border-color: rgba(38,178,152,0.5); background: rgba(38,178,152,0.06); }
 
-  /* Textarea */
-  textarea {
-    width: 100%; min-height: 100px; background: rgba(0,0,0,0.2); border: 1px solid rgba(232,168,56,0.2);
-    border-radius: 8px; padding: 0.8rem; color: var(--text); font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem; resize: vertical; outline: none;
-  }
-  textarea:focus { border-color: rgba(232,168,56,0.4); }
+  textarea, input[type="text"], input[type="password"], input[type="month"] { width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(38,178,152,0.2); border-radius: 8px; padding: 0.75rem; color: var(--text); font-family: Arial, sans-serif; font-size: 0.85rem; outline: none; }
+  textarea { min-height: 80px; resize: vertical; }
+  textarea:focus, input:focus { border-color: rgba(38,178,152,0.5); }
 
-  .summary-box {
-    margin-top: 1.2rem; padding: 1rem; background: rgba(0,0,0,0.15); border-radius: 8px;
-    font-size: 0.8rem; color: var(--text-muted);
-  }
-  .summary-box strong { color: var(--gold); }
+  .summary-box { margin-top: 1rem; padding: 0.8rem 1rem; background: rgba(0,0,0,0.15); border-radius: 8px; font-size: 0.78rem; color: var(--text-muted); }
+  .summary-box strong { color: var(--ecu-teal); }
 
-  /* Spinner */
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
-  .spinner {
-    width: 48px; height: 48px; margin: 0 auto 1.2rem;
-    border: 3px solid rgba(232,168,56,0.2); border-top-color: var(--gold);
-    border-radius: 50%; animation: spin 1s linear infinite;
-  }
+  .spinner { width: 48px; height: 48px; margin: 0 auto 1.2rem; border: 3px solid rgba(38,178,152,0.2); border-top-color: var(--ecu-teal); border-radius: 50%; animation: spin 1s linear infinite; }
   .search-card { text-align: center; padding: 3rem 1.5rem; }
-  .search-phase { color: var(--gold); font-size: 0.85rem; }
+  .search-phase { color: var(--ecu-teal); font-size: 0.85rem; }
   .search-note { color: var(--text-dim); font-size: 0.75rem; margin-top: 1rem; }
 
-  /* Results */
   .results-header { margin-bottom: 1rem; }
-  .results-header .label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
-  .results-header h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold-pale); margin-bottom: 0.2rem; }
+  .results-header .label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ecu-teal); margin-bottom: 0.4rem; }
+  .results-header h2 { font-size: 1.3rem; color: #fff; margin-bottom: 0.2rem; }
   .results-header .timestamp { color: var(--text-dim); font-size: 0.78rem; }
 
-  .results-body { font-size: 0.9rem; line-height: 1.7; margin-bottom: 1rem; }
-  .results-body h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; margin: 1.2rem 0 0.5rem; color: var(--gold-pale); }
-  .results-body h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 600; margin: 1rem 0 0.4rem; color: var(--gold); }
-  .results-body h4 { font-size: 1rem; font-weight: 600; margin: 0.8rem 0 0.3rem; color: #D4A050; }
+  .results-body { font-size: 0.88rem; line-height: 1.7; margin-bottom: 1rem; }
+  .results-body h2 { font-size: 1.3rem; font-weight: 700; margin: 1.2rem 0 0.5rem; color: #fff; }
+  .results-body h3 { font-size: 1.1rem; font-weight: 600; margin: 1rem 0 0.4rem; color: var(--ecu-teal); }
+  .results-body h4 { font-size: 0.95rem; font-weight: 600; margin: 0.8rem 0 0.3rem; color: var(--ecu-teal-light); }
   .results-body p { margin-bottom: 0.4rem; }
   .results-body li { margin-left: 1.2rem; margin-bottom: 0.3rem; line-height: 1.6; }
-  .results-body a { color: var(--gold); text-decoration: underline; }
-  .results-body strong { color: var(--gold-pale); }
+  .results-body a { color: var(--ecu-teal); text-decoration: underline; }
+  .results-body strong { color: #fff; }
   .results-body .spacer { height: 0.5rem; }
 
-  /* Follow-up */
-  .followup-section h3 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--gold-pale); margin-bottom: 0.5rem; }
+  .followup-section h3 { font-size: 1rem; color: #fff; margin-bottom: 0.5rem; }
   .followup-row { display: flex; gap: 0.5rem; }
-  .followup-input {
-    flex: 1; background: rgba(0,0,0,0.2); border: 1px solid rgba(232,168,56,0.2);
-    border-radius: 8px; padding: 0.7rem; color: var(--text); font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem; outline: none;
-  }
-  .followup-input:focus { border-color: rgba(232,168,56,0.4); }
-  .followup-result { margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.15); border-radius: 8px; font-size: 0.88rem; line-height: 1.7; }
-
-  /* API Key Modal */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100;
-    display: flex; align-items: center; justify-content: center; padding: 1.5rem;
-    animation: fadeIn 0.2s;
-  }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  .modal {
-    background: var(--bg-mid); border: 1px solid var(--card-border); border-radius: 16px;
-    padding: 2rem; max-width: 480px; width: 100%;
-  }
-  .modal h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--gold-pale); margin-bottom: 0.4rem; }
-  .modal p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.5; }
-  .modal input {
-    width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(232,168,56,0.2);
-    border-radius: 8px; padding: 0.75rem; color: var(--text); font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem; outline: none; margin-bottom: 1rem;
-  }
-  .modal input:focus { border-color: rgba(232,168,56,0.5); }
-  .modal .note { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1rem; line-height: 1.5; }
+  .followup-input { flex: 1; }
+  .followup-result { margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.15); border-radius: 8px; font-size: 0.86rem; line-height: 1.7; }
 
   .error-card { border-color: rgba(220,80,80,0.3); }
   .error-card h2 { color: #E88A8A; }
 
-  .hidden { display: none !important; }
+  .date-row { display: flex; gap: 0.8rem; margin-bottom: 1rem; }
+  .date-row label { font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem; }
+  .date-row > div { flex: 1; }
 
-  @media (max-width: 500px) {
-    .region-grid { grid-template-columns: 1fr; }
-    .container { padding: 0 1rem 2rem; }
-  }
+  .compare-toggle { margin-top: 1rem; padding: 0.8rem; background: rgba(177,29,117,0.08); border: 1px solid rgba(177,29,117,0.25); border-radius: 8px; }
+  .compare-toggle label { font-size: 0.82rem; color: var(--ecu-magenta); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
+  .compare-toggle input { accent-color: var(--ecu-magenta); }
+  .compare-select { margin-top: 0.6rem; }
+
+  .action-bar { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem; }
+
+  .ecu-footer { text-align: center; padding: 2rem 1.5rem 1rem; font-size: 0.7rem; color: var(--text-dim); border-top: 1px solid rgba(38,178,152,0.1); margin-top: 2rem; }
+  .ecu-footer a { color: var(--ecu-teal); }
+
+  .hidden { display: none !important; }
+  @media (max-width: 500px) { .region-grid { grid-template-columns: 1fr; } .container { padding: 0 1rem 2rem; } .date-row { flex-direction: column; } }
 </style>
 </head>
 <body>
@@ -194,22 +136,27 @@
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 
+<!-- ECU Brand Bar -->
+<div class="ecu-bar">
+  <div><div class="ecu-logo"><span>ECU</span> Edith Cowan University</div><div class="ecu-sub">School of Business &amp; Law</div></div>
+</div>
+
 <!-- API Key Entry -->
 <div id="apiEntry" style="max-width:480px;margin:2rem auto;padding:0 1.5rem;">
   <div class="card" style="text-align:center;">
-    <h2 style="margin-bottom:0.5rem;">Enter your API Key to get started</h2>
-    <p class="hint" style="margin-bottom:1rem;">Paste your Anthropic API key below. It starts with <code style="color:var(--gold);background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;">sk-ant-</code></p>
-    <input type="password" id="apiKeyField" placeholder="sk-ant-api03-..." style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(232,168,56,0.2);border-radius:8px;padding:0.75rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;margin-bottom:0.5rem;" />
-    <p id="apiError" style="color:#E88A8A;font-size:0.8rem;margin-bottom:0.5rem;display:none;"></p>
-    <button class="btn btn-primary" style="width:100%;margin-top:0.5rem;" onclick="validateAndSaveKey()">Connect & Start</button>
-    <p style="color:var(--text-dim);font-size:0.72rem;margin-top:0.8rem;line-height:1.5;">Your key is only used in your browser to call the Anthropic API. It is never stored or sent anywhere else. Get a key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--gold);">console.anthropic.com</a></p>
+    <h2 style="margin-bottom:0.5rem;">Welcome to the WA Holiday Finder</h2>
+    <p class="hint" style="margin-bottom:1rem;">Paste your Anthropic API key to get started. It starts with <code style="color:var(--ecu-teal);background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;">sk-ant-</code></p>
+    <input type="password" id="apiKeyField" placeholder="sk-ant-api03-..." />
+    <p id="apiError" style="color:#E88A8A;font-size:0.8rem;margin:0.5rem 0 0;display:none;"></p>
+    <button class="btn btn-primary" style="width:100%;margin-top:0.8rem;" onclick="validateAndSaveKey()">Connect &amp; Start</button>
+    <p style="color:var(--text-dim);font-size:0.7rem;margin-top:0.8rem;line-height:1.5;">Your key stays in your browser only. Get one at <a href="https://console.anthropic.com" target="_blank" style="color:var(--ecu-teal);">console.anthropic.com</a></p>
   </div>
 </div>
 
 <header class="hidden" id="mainHeader">
   <div class="tag-line">AI-Powered Travel Agent</div>
   <h1>Western Australia<br>Holiday Finder</h1>
-  <p class="subtitle">Tell me what you're after, and I'll search the web for the best current deals.</p>
+  <p class="subtitle">Tell me what you're after, and I'll search the web for the best current deals across WA.</p>
 </header>
 
 <div id="progressBar" class="progress hidden">
@@ -227,6 +174,14 @@
     <h2>Where in WA are you dreaming of?</h2>
     <p class="hint">Pick your region</p>
     <div class="region-grid" id="regionGrid"></div>
+    <!-- Compare toggle -->
+    <div class="compare-toggle" id="compareToggle">
+      <label><input type="checkbox" id="compareCheck" onchange="toggleCompare()"> Compare two destinations side by side</label>
+      <div class="compare-select hidden" id="compareSelect">
+        <p class="hint" style="margin:0.5rem 0 0.3rem;">Pick a second region to compare:</p>
+        <div class="region-grid" id="regionGrid2"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Step 1: Interests -->
@@ -256,11 +211,20 @@
     <button class="btn btn-ghost" onclick="goStep(2)">Back</button>
   </div>
 
-  <!-- Step 4: Extras -->
+  <!-- Step 4: Extras + Date Picker -->
   <div id="step4" class="card hidden">
-    <h2>Anything else I should know?</h2>
-    <p class="hint">Travel dates, group size, accessibility needs, pet-friendly, etc.</p>
-    <textarea id="extraNotes" placeholder="e.g. Travelling with 2 kids under 10, looking at Easter school holidays, need pet-friendly accommodation..."></textarea>
+    <h2>Travel dates &amp; other details</h2>
+    <div class="date-row">
+      <div><label>Preferred travel month</label><input type="month" id="travelMonth" /></div>
+      <div><label>Flexible?</label>
+        <div style="display:flex;gap:0.5rem;margin-top:0.3rem;">
+          <button class="tag active" id="flexYes" onclick="setFlex(true)">Yes, flexible</button>
+          <button class="tag" id="flexNo" onclick="setFlex(false)">Fixed dates</button>
+        </div>
+      </div>
+    </div>
+    <p class="hint">Anything else? Group size, kids, pets, accessibility needs...</p>
+    <textarea id="extraNotes" placeholder="e.g. Travelling with 2 kids under 10, need pet-friendly accommodation..."></textarea>
     <div class="btn-row">
       <button class="btn btn-ghost" onclick="goStep(3)">Back</button>
       <button class="btn btn-primary" onclick="runSearch()">🔍 Find My Deals</button>
@@ -272,7 +236,7 @@
   <div id="step5" class="card search-card hidden">
     <div class="spinner"></div>
     <h2 id="searchTitle">Searching the web for your perfect WA getaway...</h2>
-    <p class="search-phase" id="searchPhase">🔍 Searching for accommodation deals...</p>
+    <p class="search-phase" id="searchPhase"></p>
     <p class="search-note">This usually takes 15-30 seconds</p>
   </div>
 
@@ -281,23 +245,30 @@
     <div class="card results-header">
       <div class="label">Your Personalised Results</div>
       <h2 id="resultsTitle"></h2>
-      <div class="timestamp">Searched and compiled just now</div>
+      <div class="timestamp" id="resultsTimestamp"></div>
     </div>
 
     <div class="card results-body" id="resultsBody" style="margin-top:1rem"></div>
 
+    <!-- Compare results -->
+    <div class="card results-body hidden" id="compareBody" style="margin-top:1rem;border-color:rgba(177,29,117,0.25);"></div>
+
+    <!-- Action buttons -->
+    <div class="action-bar">
+      <button class="btn btn-primary" onclick="exportPDF()">📄 Save as PDF</button>
+      <button class="btn btn-ghost" style="flex:1;" onclick="startOver()">🔄 New Search</button>
+      <button class="btn btn-ghost" onclick="forgetKey()" style="font-size:0.78rem;padding:0.5rem 1rem;">Change Key</button>
+    </div>
+
     <div class="card followup-section" style="margin-top:1rem">
       <h3>Have a follow-up question?</h3>
-      <div id="followupStatus" class="hidden" style="padding:0.8rem;background:rgba(232,168,56,0.1);border:1px solid rgba(232,168,56,0.3);border-radius:8px;margin-bottom:0.8rem;text-align:center;color:var(--gold);font-size:0.85rem;"></div>
+      <div id="followupStatus" class="hidden" style="padding:0.8rem;background:rgba(38,178,152,0.1);border:1px solid rgba(38,178,152,0.3);border-radius:8px;margin-bottom:0.8rem;text-align:center;color:var(--ecu-teal);font-size:0.85rem;"></div>
       <div class="followup-row">
-        <input class="followup-input" id="followupInput" placeholder="e.g. Are there any glamping options? What about whale season dates?" />
+        <input type="text" class="followup-input" id="followupInput" placeholder="e.g. Are there glamping options? What about whale season?" />
         <button class="btn btn-primary" id="followupBtn" style="padding:0.7rem 1.2rem" onclick="askFollowUp()">Ask</button>
       </div>
       <div class="followup-result hidden" id="followupResult"></div>
     </div>
-
-    <button class="btn btn-ghost" style="width:100%;margin-top:1rem" onclick="startOver()">Start a New Search</button>
-    <p style="text-align:center;margin-top:0.8rem;"><a href="#" onclick="forgetKey();return false;" style="color:var(--text-dim);font-size:0.75rem;text-decoration:underline;">Change API key</a></p>
   </div>
 
   <!-- Error -->
@@ -308,6 +279,10 @@
   </div>
 </div>
 
+<div class="ecu-footer">
+  <p>Built by ECU School of Business &amp; Law · Powered by Claude AI · <a href="https://www.ecu.edu.au" target="_blank">ecu.edu.au</a></p>
+</div>
+
 <script>
 const REGIONS = [
   { id:"perth", name:"Perth & Surrounds", emoji:"🏙️" },
@@ -316,140 +291,124 @@ const REGIONS = [
   { id:"kimberley", name:"The Kimberley & Broome", emoji:"🌅" },
   { id:"goldfields", name:"Goldfields & Esperance", emoji:"⛏️" },
   { id:"pilbara", name:"Pilbara & Karijini", emoji:"🏜️" },
+  { id:"surprise", name:"Open to Suggestions", emoji:"✨" },
 ];
 const INTERESTS = ["Beach & Snorkelling","Wine & Food","Wildlife","Adventure & Hiking","Family Friendly","Luxury Getaway","Budget Travel","Road Trip","Cultural Experiences","Photography"];
 const DURATIONS = ["Weekend (2-3 nights)","Short break (4-5 nights)","Week (6-7 nights)","Extended (8+ nights)"];
 const BUDGETS = ["Budget (<$150/night)","Mid-range ($150-$300/night)","Premium ($300-$500/night)","Luxury ($500+/night)"];
 
-let state = { region: null, interests: [], duration: null, budget: null, extra: "", results: "", apiKey: "" };
+let state = { region: null, region2: null, comparing: false, interests: [], duration: null, budget: null, extra: "", results: "", results2: "", apiKey: "", flexible: true };
 let currentStep = 0;
 
-// --- API Key Validation ---
+// --- API Key ---
 async function validateAndSaveKey() {
   const key = document.getElementById('apiKeyField').value.trim();
   const errEl = document.getElementById('apiError');
   if (!key) { errEl.textContent = 'Please paste your API key.'; errEl.style.display = 'block'; return; }
   if (!key.startsWith('sk-ant-')) { errEl.textContent = 'Key should start with sk-ant-. Check you copied the full key.'; errEl.style.display = 'block'; return; }
-  errEl.textContent = 'Testing connection...'; errEl.style.color = 'var(--gold)'; errEl.style.display = 'block';
+  errEl.textContent = 'Testing connection...'; errEl.style.color = 'var(--ecu-teal)'; errEl.style.display = 'block';
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 10, messages: [{ role: 'user', content: 'Hi' }] })
     });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      errEl.style.color = '#E88A8A';
-      errEl.textContent = 'Key rejected: ' + (data?.error?.message || 'Status ' + res.status) + '. Check your key and try again.';
-      return;
-    }
+    if (!res.ok) { const d = await res.json().catch(()=>({})); errEl.style.color = '#E88A8A'; errEl.textContent = 'Key rejected: ' + (d?.error?.message || res.status); return; }
     state.apiKey = key;
     try { localStorage.setItem('wa_holiday_finder_key', key); } catch(e) {}
     showMainApp();
-  } catch (e) {
-    errEl.style.color = '#E88A8A';
-    errEl.textContent = 'Connection failed: ' + e.message;
-  }
+  } catch (e) { errEl.style.color = '#E88A8A'; errEl.textContent = 'Connection failed: ' + e.message; }
 }
-
 function showMainApp() {
   document.getElementById('apiEntry').classList.add('hidden');
   document.getElementById('mainHeader').classList.remove('hidden');
   document.getElementById('progressBar').classList.remove('hidden');
   document.getElementById('step0').classList.remove('hidden');
 }
+function forgetKey() { try { localStorage.removeItem('wa_holiday_finder_key'); } catch(e) {} state.apiKey = ''; location.reload(); }
+function checkSavedKey() { try { const s = localStorage.getItem('wa_holiday_finder_key'); if (s && s.startsWith('sk-ant-')) { state.apiKey = s; showMainApp(); } } catch(e) {} }
 
-function forgetKey() {
-  try { localStorage.removeItem('wa_holiday_finder_key'); } catch(e) {}
-  state.apiKey = '';
-  location.reload();
+// --- Date & Flex ---
+function setFlex(val) {
+  state.flexible = val;
+  document.getElementById('flexYes').classList.toggle('active', val);
+  document.getElementById('flexNo').classList.toggle('active', !val);
 }
 
-// --- Check for saved key on page load ---
-function checkSavedKey() {
-  try {
-    const saved = localStorage.getItem('wa_holiday_finder_key');
-    if (saved && saved.startsWith('sk-ant-')) {
-      state.apiKey = saved;
-      showMainApp();
-    }
-  } catch(e) {}
+// --- Compare ---
+function toggleCompare() {
+  state.comparing = document.getElementById('compareCheck').checked;
+  document.getElementById('compareSelect').classList.toggle('hidden', !state.comparing);
+  if (!state.comparing) state.region2 = null;
 }
 
 // --- Build UI ---
 function buildRegions() {
   const grid = document.getElementById('regionGrid');
+  const grid2 = document.getElementById('regionGrid2');
   REGIONS.forEach(r => {
     const btn = document.createElement('button');
     btn.className = 'region-btn';
     btn.innerHTML = `<span class="emoji">${r.emoji}</span><span>${r.name}</span>`;
-    btn.onclick = () => { state.region = r.id; goStep(1); };
+    btn.onclick = () => { state.region = r.id; if (!state.comparing || state.region2) goStep(1); };
     grid.appendChild(btn);
+
+    const btn2 = document.createElement('button');
+    btn2.className = 'region-btn';
+    btn2.innerHTML = `<span class="emoji">${r.emoji}</span><span>${r.name}</span>`;
+    btn2.onclick = () => { state.region2 = r.id; if (state.region) goStep(1); };
+    grid2.appendChild(btn2);
   });
 }
-
 function buildInterests() {
   const grid = document.getElementById('interestGrid');
   INTERESTS.forEach(i => {
     const btn = document.createElement('button');
-    btn.className = 'tag';
-    btn.textContent = i;
-    btn.onclick = () => {
-      const idx = state.interests.indexOf(i);
-      if (idx > -1) { state.interests.splice(idx, 1); btn.classList.remove('active'); }
-      else { state.interests.push(i); btn.classList.add('active'); }
-      document.getElementById('interestNext').disabled = state.interests.length === 0;
-    };
+    btn.className = 'tag'; btn.textContent = i;
+    btn.onclick = () => { const idx = state.interests.indexOf(i); if (idx > -1) { state.interests.splice(idx, 1); btn.classList.remove('active'); } else { state.interests.push(i); btn.classList.add('active'); } document.getElementById('interestNext').disabled = state.interests.length === 0; };
     grid.appendChild(btn);
   });
 }
-
-function buildOptions(containerId, items, stateKey, nextStep) {
-  const list = document.getElementById(containerId);
-  items.forEach(item => {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.textContent = item;
-    btn.onclick = () => { state[stateKey] = item; goStep(nextStep); };
-    list.appendChild(btn);
-  });
+function buildOptions(cid, items, key, next) {
+  const list = document.getElementById(cid);
+  items.forEach(item => { const btn = document.createElement('button'); btn.className = 'option-btn'; btn.textContent = item; btn.onclick = () => { state[key] = item; goStep(next); }; list.appendChild(btn); });
 }
 
 // --- Navigation ---
 function goStep(step) {
   currentStep = step;
-  for (let i = 0; i <= 6; i++) {
-    const el = document.getElementById('step' + i);
-    if (el) el.classList.toggle('hidden', i !== step);
-  }
+  for (let i = 0; i <= 6; i++) { const el = document.getElementById('step' + i); if (el) el.classList.toggle('hidden', i !== step); }
   document.getElementById('stepError').classList.add('hidden');
-
-  const bar = document.getElementById('progressBar');
-  bar.classList.toggle('hidden', step >= 5);
-  document.querySelectorAll('.progress-dot').forEach(d => {
-    d.classList.toggle('active', parseInt(d.dataset.step) <= step);
-  });
-
+  document.getElementById('progressBar').classList.toggle('hidden', step >= 5);
+  document.querySelectorAll('.progress-dot').forEach(d => d.classList.toggle('active', parseInt(d.dataset.step) <= step));
   if (step === 4) updateSummary();
 }
-
 function updateSummary() {
   const r = REGIONS.find(x => x.id === state.region);
-  document.getElementById('summaryBox').innerHTML =
-    `<strong>Your search:</strong> ${r?.name || '—'} · ${state.interests.join(', ')} · ${state.duration} · ${state.budget}`;
+  const r2 = state.comparing ? REGIONS.find(x => x.id === state.region2) : null;
+  const month = document.getElementById('travelMonth').value;
+  let txt = `<strong>Your search:</strong> ${r?.name || '—'}`;
+  if (r2) txt += ` vs ${r2.name}`;
+  txt += ` · ${state.interests.join(', ')} · ${state.duration} · ${state.budget}`;
+  if (month) txt += ` · ${month}`;
+  document.getElementById('summaryBox').innerHTML = txt;
 }
-
 function startOver() {
-  state = { ...state, region: null, interests: [], duration: null, budget: null, extra: "", results: "" };
+  state = { ...state, region: null, region2: null, comparing: false, interests: [], duration: null, budget: null, extra: "", results: "", results2: "", flexible: true };
   document.getElementById('extraNotes').value = '';
+  document.getElementById('travelMonth').value = '';
   document.getElementById('followupInput').value = '';
   document.getElementById('followupResult').classList.add('hidden');
+  document.getElementById('compareCheck').checked = false;
+  document.getElementById('compareSelect').classList.add('hidden');
+  document.getElementById('compareBody').classList.add('hidden');
   document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
   document.getElementById('interestNext').disabled = true;
+  setFlex(true);
   goStep(0);
 }
 
-// --- Markdown Rendering ---
+// --- Markdown ---
 function renderMarkdown(text) {
   if (!text) return '';
   return text.split('\n').map(line => {
@@ -465,91 +424,91 @@ function renderMarkdown(text) {
   }).join('\n');
 }
 
-// --- API Calls ---
-function buildPrompt() {
-  const r = REGIONS.find(x => x.id === state.region);
+// --- API ---
+function buildPrompt(regionObj) {
   const extra = document.getElementById('extraNotes').value.trim();
-  return `You are a Western Australia travel deals expert. Search the web thoroughly and find the BEST current holiday deals for a trip to ${r.name}, Western Australia.
+  const month = document.getElementById('travelMonth').value;
+  const flexTxt = state.flexible ? 'Dates are flexible' : 'Dates are fixed';
+  const regionName = regionObj.id === 'surprise' ? 'anywhere in Western Australia — suggest the best region based on their interests and budget' : regionObj.name;
+
+  return `You are a Western Australia travel deals expert. Search the web thoroughly and find the BEST current holiday deals for a trip to ${regionName}.
 
 Traveller preferences:
-- Region: ${r.name}
+- Region: ${regionName}
 - Interests: ${state.interests.join(', ')}
 - Duration: ${state.duration}
 - Budget: ${state.budget}
+${month ? `- Preferred travel month: ${month} (${flexTxt})` : `- Travel dates: Not specified (${flexTxt})`}
 ${extra ? `- Additional notes: ${extra}` : ''}
 - Travelling from: Perth, Western Australia
 
-Please search for and provide:
+Search the web and provide:
 
-1. **🏨 Top Accommodation Deals** — Find 3-4 specific current deals with prices, property names, and what makes them good value. Include any current promotions or discounts.
+1. **🏨 Top Accommodation Deals** — 3-4 specific current deals with prices, property names, what makes them good value, and any promotions.
 
-2. **✈️ Getting There** — Best transport options and any current deals (flights, drive routes, car hire specials).
+2. **✈️ Getting There** — Best transport options and current deals (flights, drive routes with times, car hire specials).
 
-3. **🎯 Activities & Experiences** — 3-4 must-do experiences that match their interests, with current pricing and any combo deals.
+3. **🎯 Activities & Experiences** — 3-4 must-do experiences matching their interests, with current pricing and combo deals.
 
-4. **💡 Money-Saving Tips** — Insider tips specific to this region and time of year for getting the best value.
+4. **🍽️ Food & Dining** — 2-3 standout restaurants or food experiences. Note any that need advance booking.
 
-5. **📅 Best Time to Go** — Considering current/upcoming seasons, when would be optimal and why.
+5. **💡 Money-Saving Tips** — Insider tips specific to this region and time of year.
 
-For each recommendation, include specific prices where possible, links or provider names, and why it's a good deal right now. Be specific and actionable — not generic travel guide content.`;
+6. **📅 Timing Advice** — ${month ? `Is ${month} a good time? What to expect for weather, crowds, and events.` : 'When is the ideal window and why, considering seasons, weather, crowds, and events.'}
+
+Be specific with real prices, property names, and provider names. If you cannot find a current price, say so.`;
 }
 
 async function callClaude(messages) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': state.apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 4000,
-      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-      messages
-    })
+    headers: { 'Content-Type': 'application/json', 'x-api-key': state.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 4000, tools: [{ type: 'web_search_20250305', name: 'web_search' }], messages })
   });
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
-    throw new Error(`API error ${res.status}: ${errData?.error?.message || res.statusText}`);
-  }
+  if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(`API error ${res.status}: ${d?.error?.message || res.statusText}`); }
   const data = await res.json();
-  // Extract text from all content blocks
   let text = '';
-  if (data.content && Array.isArray(data.content)) {
-    for (const block of data.content) {
-      if (block.type === 'text' && block.text) {
-        text += (text ? '\n\n' : '') + block.text;
-      }
-    }
-  }
-  if (!text) {
-    throw new Error('No text in response. The model may still be processing. Please try again.');
-  }
+  if (data.content && Array.isArray(data.content)) { for (const b of data.content) { if (b.type === 'text' && b.text) text += (text ? '\n\n' : '') + b.text; } }
+  if (!text) throw new Error('No text in response. Please try again.');
   return text;
 }
 
 async function runSearch() {
   goStep(5);
-  const phases = [
-    "🔍 Searching for accommodation deals...",
-    "✈️ Checking transport options...",
-    "🎯 Finding activities & experiences...",
-    "💰 Compiling best value picks...",
-    "📋 Preparing your personalised report..."
-  ];
+  const r = REGIONS.find(x => x.id === state.region);
+  const r2 = state.comparing ? REGIONS.find(x => x.id === state.region2) : null;
+
+  const phases = r2
+    ? [`🔍 Searching deals for ${r.name}...`, `🔍 Now searching ${r2.name}...`, "📊 Building your comparison...", "📋 Preparing your report..."]
+    : ["🔍 Searching for accommodation deals...", "✈️ Checking transport options...", "🎯 Finding activities & experiences...", "📋 Preparing your personalised report..."];
+
   let pi = 0;
   const phaseEl = document.getElementById('searchPhase');
   phaseEl.textContent = phases[0];
-  const iv = setInterval(() => { pi++; if (pi < phases.length) phaseEl.textContent = phases[pi]; else clearInterval(iv); }, 4000);
+  const iv = setInterval(() => { pi++; if (pi < phases.length) phaseEl.textContent = phases[pi]; else clearInterval(iv); }, 5000);
 
   try {
-    state.results = await callClaude([{ role: 'user', content: buildPrompt() }]);
+    state.results = await callClaude([{ role: 'user', content: buildPrompt(r) }]);
+
+    if (r2) {
+      pi = 1; phaseEl.textContent = phases[1];
+      state.results2 = await callClaude([{ role: 'user', content: buildPrompt(r2) }]);
+    }
+
     clearInterval(iv);
-    const r = REGIONS.find(x => x.id === state.region);
-    document.getElementById('resultsTitle').textContent = `${r.emoji} ${r.name} Deals`;
-    document.getElementById('resultsBody').innerHTML = renderMarkdown(state.results);
+    const now = new Date();
+    document.getElementById('resultsTimestamp').textContent = `Searched ${now.toLocaleDateString('en-AU')} at ${now.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' })}`;
+
+    if (r2) {
+      document.getElementById('resultsTitle').textContent = `${r.emoji} ${r.name} vs ${r2.emoji} ${r2.name}`;
+      document.getElementById('resultsBody').innerHTML = `<h2>${r.emoji} ${r.name}</h2>` + renderMarkdown(state.results);
+      document.getElementById('compareBody').innerHTML = `<h2>${r2.emoji} ${r2.name}</h2>` + renderMarkdown(state.results2);
+      document.getElementById('compareBody').classList.remove('hidden');
+    } else {
+      document.getElementById('resultsTitle').textContent = `${r.emoji} ${r.name} Deals`;
+      document.getElementById('resultsBody').innerHTML = renderMarkdown(state.results);
+      document.getElementById('compareBody').classList.add('hidden');
+    }
     goStep(6);
   } catch (err) {
     clearInterval(iv);
@@ -559,6 +518,38 @@ async function runSearch() {
   }
 }
 
+// --- PDF Export ---
+function exportPDF() {
+  const el = document.createElement('div');
+  el.style.cssText = 'padding:2rem;font-family:Arial,sans-serif;color:#222;max-width:700px;';
+  const r = REGIONS.find(x => x.id === state.region);
+  const r2 = state.comparing ? REGIONS.find(x => x.id === state.region2) : null;
+  const ts = document.getElementById('resultsTimestamp').textContent;
+
+  let html = `<div style="border-bottom:3px solid #26B298;padding-bottom:1rem;margin-bottom:1.5rem;">
+    <div style="font-size:0.75rem;color:#26B298;letter-spacing:0.15em;text-transform:uppercase;">ECU · WA Holiday Deal Finder</div>
+    <h1 style="font-size:1.6rem;color:#0E2841;margin:0.3rem 0;">${r.emoji} ${r.name}${r2 ? ` vs ${r2.emoji} ${r2.name}` : ''}</h1>
+    <div style="font-size:0.8rem;color:#666;">${ts}</div>
+    <div style="font-size:0.8rem;color:#666;margin-top:0.3rem;">${state.interests.join(', ')} · ${state.duration} · ${state.budget}</div>
+  </div>`;
+  html += document.getElementById('resultsBody').innerHTML;
+  if (r2) html += '<hr style="margin:2rem 0;border-color:#B11D75;">' + document.getElementById('compareBody').innerHTML;
+  html += `<div style="margin-top:2rem;padding-top:1rem;border-top:1px solid #ddd;font-size:0.7rem;color:#999;">Generated by ECU WA Holiday Deal Finder · ecu.edu.au</div>`;
+  el.innerHTML = html;
+
+  // Fix colours for PDF
+  el.querySelectorAll('h2').forEach(h => { h.style.color = '#0E2841'; h.style.fontSize = '1.2rem'; h.style.marginTop = '1.2rem'; });
+  el.querySelectorAll('h3').forEach(h => { h.style.color = '#26B298'; h.style.fontSize = '1rem'; });
+  el.querySelectorAll('h4').forEach(h => { h.style.color = '#1E9A82'; });
+  el.querySelectorAll('a').forEach(a => { a.style.color = '#26B298'; });
+  el.querySelectorAll('strong').forEach(s => { s.style.color = '#0E2841'; });
+  el.querySelectorAll('li').forEach(l => { l.style.marginBottom = '0.3rem'; });
+
+  const filename = r2 ? `WA-Holiday-${r.id}-vs-${r2.id}.pdf` : `WA-Holiday-${r.id}-deals.pdf`;
+  html2pdf().set({ margin: [10,10,10,10], filename, image: { type: 'jpeg', quality: 0.95 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(el).save();
+}
+
+// --- Follow-up ---
 async function askFollowUp() {
   const input = document.getElementById('followupInput');
   const q = input.value.trim();
@@ -566,52 +557,31 @@ async function askFollowUp() {
   const btn = document.getElementById('followupBtn');
   const resultEl = document.getElementById('followupResult');
   const statusEl = document.getElementById('followupStatus');
-
-  // Show loading state prominently
-  btn.textContent = '...'; btn.disabled = true;
-  input.disabled = true;
-  statusEl.innerHTML = '🔍 <strong>Searching the web for your answer...</strong> This may take 15-30 seconds.';
-  statusEl.classList.remove('hidden');
-  statusEl.style.animation = 'pulse 2s ease-in-out infinite';
+  btn.textContent = '...'; btn.disabled = true; input.disabled = true;
+  statusEl.innerHTML = '🔍 <strong>Searching for your answer...</strong> This may take 15-30 seconds.';
+  statusEl.classList.remove('hidden'); statusEl.style.animation = 'pulse 2s ease-in-out infinite';
 
   try {
     const r = REGIONS.find(x => x.id === state.region);
-    const prompt = `You are a Western Australia travel deals expert. The user is planning a trip to ${r.name} with these preferences: interests: ${state.interests.join(', ')}, duration: ${state.duration}, budget: ${state.budget}. Answer this follow-up question with specific, current information. Search the web if needed.\n\nQuestion: ${q}`;
-
+    const prompt = `You are a Western Australia travel deals expert. The user is planning a trip to ${r.name} (interests: ${state.interests.join(', ')}, duration: ${state.duration}, budget: ${state.budget}). Answer this follow-up question with specific, current information. Search the web if needed.\n\nQuestion: ${q}`;
     let text = '';
-    try {
-      text = await callClaude([{ role: 'user', content: prompt }]);
-    } catch (firstErr) {
-      if (firstErr.message.includes('No text')) {
+    try { text = await callClaude([{ role: 'user', content: prompt }]); } catch (e) {
+      if (e.message.includes('No text')) {
         statusEl.innerHTML = '🔄 <strong>Refining search...</strong>';
-        const res2 = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'x-api-key': state.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-          body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] })
-        });
-        const data2 = await res2.json();
-        text = (data2.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n\n');
+        const r2 = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': state.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' }, body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }) });
+        const d2 = await r2.json(); text = (d2.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n\n');
       }
-      if (!text) throw firstErr;
+      if (!text) throw e;
     }
-
-    statusEl.classList.add('hidden');
-    statusEl.style.animation = '';
-    resultEl.innerHTML = renderMarkdown(text);
-    resultEl.classList.remove('hidden');
+    statusEl.classList.add('hidden'); statusEl.style.animation = '';
+    resultEl.innerHTML = renderMarkdown(text); resultEl.classList.remove('hidden');
     resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (err) {
-    statusEl.classList.add('hidden');
-    statusEl.style.animation = '';
-    resultEl.innerHTML = `<p style="color:#E88A8A;">Error: ${err.message}</p><p style="color:var(--text-muted);font-size:0.82rem;">Try rephrasing your question or click "Start a New Search" to begin fresh.</p>`;
-    resultEl.classList.remove('hidden');
+    statusEl.classList.add('hidden'); statusEl.style.animation = '';
+    resultEl.innerHTML = `<p style="color:#E88A8A;">Error: ${err.message}</p>`; resultEl.classList.remove('hidden');
   }
-  btn.textContent = 'Ask'; btn.disabled = false;
-  input.disabled = false;
-  input.value = '';
+  btn.textContent = 'Ask'; btn.disabled = false; input.disabled = false; input.value = '';
 }
-
-// Enter key for follow-up
 document.getElementById('followupInput').addEventListener('keydown', e => { if (e.key === 'Enter') askFollowUp(); });
 
 // Init
