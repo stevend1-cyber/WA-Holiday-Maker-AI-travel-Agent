@@ -236,6 +236,20 @@
     </div>
     <p class="hint">Anything else? Group size, kids, pets, accessibility needs...</p>
     <textarea id="extraNotes" placeholder="e.g. Travelling with 2 kids under 10, need pet-friendly accommodation..."></textarea>
+
+    <!-- Search speed toggle -->
+    <div style="margin-top:1rem;padding:0.8rem;background:rgba(38,178,152,0.06);border:1px solid rgba(38,178,152,0.2);border-radius:8px;">
+      <div style="font-size:0.82rem;color:#fff;font-weight:600;margin-bottom:0.5rem;">Search mode</div>
+      <div style="display:flex;gap:0.5rem;">
+        <button class="tag active" id="modeFast" onclick="setSearchMode('fast')" style="flex:1;text-align:center;">
+          ⚡ Fast<br><span style="font-size:0.7rem;font-weight:400;">~10 sec · great results</span>
+        </button>
+        <button class="tag" id="modeDetailed" onclick="setSearchMode('detailed')" style="flex:1;text-align:center;">
+          🔬 Detailed<br><span style="font-size:0.7rem;font-weight:400;">~30 sec · deeper research</span>
+        </button>
+      </div>
+    </div>
+
     <div class="btn-row">
       <button class="btn btn-ghost" onclick="goStep(3)">Back</button>
       <button class="btn btn-primary" onclick="runSearch()">🔍 Find My Deals</button>
@@ -248,7 +262,7 @@
     <div class="spinner"></div>
     <h2 id="searchTitle">Searching the web for your perfect WA getaway...</h2>
     <p class="search-phase" id="searchPhase"></p>
-    <p class="search-note">This usually takes 15-30 seconds</p>
+    <p class="search-note" id="searchNote">This usually takes 10-15 seconds</p>
   </div>
 
   <!-- Step 6: Results -->
@@ -308,8 +322,19 @@ const INTERESTS = ["Beach & Snorkelling","Wine & Food","Wildlife","Adventure & H
 const DURATIONS = ["Weekend (2-3 nights)","Short break (4-5 nights)","Week (6-7 nights)","Extended (8+ nights)"];
 const BUDGETS = ["Budget (<$150/night)","Mid-range ($150-$300/night)","Premium ($300-$500/night)","Luxury ($500+/night)"];
 
-let state = { region: null, region2: null, comparing: false, interests: [], duration: null, budget: null, extra: "", results: "", results2: "", apiKey: "", flexible: true };
+let state = { region: null, region2: null, comparing: false, interests: [], duration: null, budget: null, extra: "", results: "", results2: "", apiKey: "", flexible: true, searchMode: "fast" };
 let currentStep = 0;
+
+const MODELS = {
+  fast: 'claude-haiku-4-5-20251001',
+  detailed: 'claude-sonnet-4-6'
+};
+
+function setSearchMode(mode) {
+  state.searchMode = mode;
+  document.getElementById('modeFast').classList.toggle('active', mode === 'fast');
+  document.getElementById('modeDetailed').classList.toggle('active', mode === 'detailed');
+}
 
 // --- API Key ---
 async function validateAndSaveKey() {
@@ -322,7 +347,7 @@ async function validateAndSaveKey() {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 10, messages: [{ role: 'user', content: 'Hi' }] })
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 10, messages: [{ role: 'user', content: 'Hi' }] })
     });
     if (!res.ok) { const d = await res.json().catch(()=>({})); errEl.style.color = '#E88A8A'; errEl.textContent = 'Key rejected: ' + (d?.error?.message || res.status); return; }
     state.apiKey = key;
@@ -405,7 +430,7 @@ function updateSummary() {
   document.getElementById('summaryBox').innerHTML = txt;
 }
 function startOver() {
-  state = { ...state, region: null, region2: null, comparing: false, interests: [], duration: null, budget: null, extra: "", results: "", results2: "", flexible: true };
+  state = { ...state, region: null, region2: null, comparing: false, interests: [], duration: null, budget: null, extra: "", results: "", results2: "", flexible: true, searchMode: "fast" };
   document.getElementById('extraNotes').value = '';
   document.getElementById('travelMonth').value = '';
   document.getElementById('followupInput').value = '';
@@ -471,10 +496,11 @@ Be specific with real prices, property names, and provider names. If you cannot 
 }
 
 async function callClaude(messages) {
+  const model = MODELS[state.searchMode] || MODELS.fast;
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-api-key': state.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 4000, tools: [{ type: 'web_search_20250305', name: 'web_search' }], messages })
+    body: JSON.stringify({ model, max_tokens: state.searchMode === 'detailed' ? 4000 : 3000, tools: [{ type: 'web_search_20250305', name: 'web_search' }], messages })
   });
   if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(`API error ${res.status}: ${d?.error?.message || res.statusText}`); }
   const data = await res.json();
@@ -486,6 +512,7 @@ async function callClaude(messages) {
 
 async function runSearch() {
   goStep(5);
+  document.getElementById('searchNote').textContent = state.searchMode === 'detailed' ? 'Detailed mode — this usually takes 25-40 seconds' : 'Fast mode — this usually takes 10-15 seconds';
   const r = REGIONS.find(x => x.id === state.region);
   const r2 = state.comparing ? REGIONS.find(x => x.id === state.region2) : null;
 
@@ -598,7 +625,7 @@ async function askFollowUp() {
     try { text = await callClaude([{ role: 'user', content: prompt }]); } catch (e) {
       if (e.message.includes('No text')) {
         statusEl.innerHTML = '🔄 <strong>Refining search...</strong>';
-        const r2 = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': state.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' }, body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }) });
+        const r2 = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': state.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' }, body: JSON.stringify({ model: MODELS[state.searchMode] || MODELS.fast, max_tokens: 3000, messages: [{ role: 'user', content: prompt }] }) });
         const d2 = await r2.json(); text = (d2.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n\n');
       }
       if (!text) throw e;
