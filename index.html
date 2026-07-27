@@ -120,6 +120,7 @@
 
   /* Spinner */
   @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
   .spinner {
     width: 48px; height: 48px; margin: 0 auto 1.2rem;
     border: 3px solid rgba(232,168,56,0.2); border-top-color: var(--gold);
@@ -287,6 +288,7 @@
 
     <div class="card followup-section" style="margin-top:1rem">
       <h3>Have a follow-up question?</h3>
+      <div id="followupStatus" class="hidden" style="padding:0.8rem;background:rgba(232,168,56,0.1);border:1px solid rgba(232,168,56,0.3);border-radius:8px;margin-bottom:0.8rem;text-align:center;color:var(--gold);font-size:0.85rem;"></div>
       <div class="followup-row">
         <input class="followup-input" id="followupInput" placeholder="e.g. Are there any glamping options? What about whale season dates?" />
         <button class="btn btn-primary" id="followupBtn" style="padding:0.7rem 1.2rem" onclick="askFollowUp()">Ask</button>
@@ -563,10 +565,14 @@ async function askFollowUp() {
   if (!q) return;
   const btn = document.getElementById('followupBtn');
   const resultEl = document.getElementById('followupResult');
+  const statusEl = document.getElementById('followupStatus');
+
+  // Show loading state prominently
   btn.textContent = '...'; btn.disabled = true;
-  resultEl.innerHTML = '<p style="color:var(--gold);">🔍 Searching for an answer... this may take 10-20 seconds.</p>';
-  resultEl.classList.remove('hidden');
-  resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  input.disabled = true;
+  statusEl.innerHTML = '🔍 <strong>Searching the web for your answer...</strong> This may take 15-30 seconds.';
+  statusEl.classList.remove('hidden');
+  statusEl.style.animation = 'pulse 2s ease-in-out infinite';
 
   try {
     const r = REGIONS.find(x => x.id === state.region);
@@ -576,8 +582,8 @@ async function askFollowUp() {
     try {
       text = await callClaude([{ role: 'user', content: prompt }]);
     } catch (firstErr) {
-      // If first attempt fails with no text, retry without web search
       if (firstErr.message.includes('No text')) {
+        statusEl.innerHTML = '🔄 <strong>Refining search...</strong>';
         const res2 = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'x-api-key': state.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
@@ -589,12 +595,19 @@ async function askFollowUp() {
       if (!text) throw firstErr;
     }
 
+    statusEl.classList.add('hidden');
+    statusEl.style.animation = '';
     resultEl.innerHTML = renderMarkdown(text);
+    resultEl.classList.remove('hidden');
     resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (err) {
+    statusEl.classList.add('hidden');
+    statusEl.style.animation = '';
     resultEl.innerHTML = `<p style="color:#E88A8A;">Error: ${err.message}</p><p style="color:var(--text-muted);font-size:0.82rem;">Try rephrasing your question or click "Start a New Search" to begin fresh.</p>`;
+    resultEl.classList.remove('hidden');
   }
   btn.textContent = 'Ask'; btn.disabled = false;
+  input.disabled = false;
   input.value = '';
 }
 
