@@ -549,19 +549,20 @@ async function askFollowUp() {
   const btn = document.getElementById('followupBtn');
   const resultEl = document.getElementById('followupResult');
   btn.textContent = '...'; btn.disabled = true;
+  resultEl.innerHTML = '<p style="color:var(--gold);">🔍 Searching for an answer...</p>';
+  resultEl.classList.remove('hidden');
+  resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
   try {
     const r = REGIONS.find(x => x.id === state.region);
+    // Send a concise summary instead of full results to keep it fast
     const text = await callClaude([
-      { role: 'user', content: buildPrompt() },
-      { role: 'assistant', content: state.results },
-      { role: 'user', content: `Follow-up question about this ${r.name} trip: ${q}\n\nPlease search the web for current, specific information to answer this.` }
+      { role: 'user', content: `You are a Western Australia travel deals expert. The user is planning a trip to ${r.name} with these preferences: interests: ${state.interests.join(', ')}, duration: ${state.duration}, budget: ${state.budget}. You already provided a deals report for them. Now answer this follow-up question specifically and concisely. Search the web for current information.\n\nQuestion: ${q}` }
     ]);
     resultEl.innerHTML = renderMarkdown(text);
-    resultEl.classList.remove('hidden');
+    resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (err) {
     resultEl.innerHTML = `<p>Sorry, couldn't process that follow-up: ${err.message}</p>`;
-    resultEl.classList.remove('hidden');
   }
   btn.textContent = 'Ask'; btn.disabled = false;
   input.value = '';
